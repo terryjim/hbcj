@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import cn.com.topit.hbcj.dao.User;
 import cn.com.topit.hbcj.dao.UsersDao;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 
 @Service
 public class UsersService {
@@ -21,12 +21,25 @@ public class UsersService {
 		return usersDao.getUser(token);
 	}
 
-	public User getUser(String userName, String password) {		
+	public User getUser(String userName, String password) {	
+		System.out.println(userName);System.out.println(password);
 		return usersDao.getUser(userName, password);
 	}
 
 	// 更新token
 	public String updateToken(Long id) {
 		return usersDao.updateToken(id);
+	}
+	public User getSmsUser(String token) {		
+		return usersDao.getSmsUser(token);
+	}
+
+	public User getSmsUser(String userName, String password) {		
+		return usersDao.getSmsUser(userName, password);
+	}
+
+	// 更新token
+	public String updateSmsToken(Long id) {
+		return usersDao.updateSmsToken(id);
 	}	
 }

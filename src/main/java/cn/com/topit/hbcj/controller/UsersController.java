@@ -1,15 +1,15 @@
 package cn.com.topit.hbcj.controller;
 
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.com.topit.hbcj.dao.User;
@@ -24,31 +24,28 @@ public class UsersController {
 	private UsersService usersService;
 	/** 日志实例 */
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	
-	@Value("#{APP_PROP['parameterError']}") String parameterError;
-	@RequestMapping(value = "/login", method=RequestMethod.GET, produces = "text/html;charset=UTF-8")
-	public @ResponseBody User login(			
-			@RequestParam (value = "userName", defaultValue = "") String userName,
-			@RequestParam (value = "password", defaultValue = "") String password
-			) throws JsonProcessingException {	
+
+	@Value("#{APP_PROP['parameterError']}")
+	String parameterError;
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value = "login", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+	public String login(@RequestBody JSONObject jsonObj)
+			throws JsonProcessingException {
 		
-		return usersService.getUser(userName,password);
+		User user = usersService.getUser(jsonObj.getString("userName"), jsonObj.getString("password"));
+		String token = "";
+		if (user != null) {
+			if (user.getToken() == null || user.getToken().equals(""))
+				token = usersService.updateToken(user.getId());
+			else
+				token = user.getToken();
+		}
+		return "{\"token\":\"" + token + "\"}";
+
+		// 数据转换
+		/*
+		 * ObjectMapper mapper = new ObjectMapper(); return
+		 * mapper.writeValueAsString(user);
+		 */
 	}
-	/*@RequestMapping(value = "/user/usersInOrgs", method=RequestMethod.GET, produces = "text/html;charset=UTF-8")
-	public String getUsersInOrgs(
-			@PathVariable(value = "version") String version,
-			@RequestHeader (value = "Authorization", defaultValue = "") String authorization,
-			@RequestParam (value = "uids", defaultValue = "") String uids
-			) throws JsonProcessingException {
-		//验证token以及版本号
-		String verify = CommonUtils.verifyToken(authorization, version);
-		if(!verify.equals("")){
-			return verify;
-		}
-		if(uids==null || uids.equals("")){
-			return parameterError;
-		}
-		
-		return usersService.getUsers(uids);
-	}*/
 }
