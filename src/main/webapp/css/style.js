@@ -51,7 +51,7 @@ export default StyleSheet.create({
     'marginTop': [{ 'unit': '%V', 'value': 0.05 }]
   },
   'input-username': {
-    'width': [{ 'unit': '%H', 'value': NaN }],
+    'width': [{ 'unit': '%H', 'value': 1 }],
     'height': [{ 'unit': 'px', 'value': 50 }],
     'lineHeight': [{ 'unit': 'px', 'value': 50 }],
     'background': 'url(../images/username.png) no-repeat left center',

@@ -104,4 +104,9 @@ public class UsersDao {
 			else
 				return token;
 		}
+		//更改sms_user密码	
+		public int chgPwd(String userName,String newPwd) {		
+			String sql = "update t_d_sms_user set password=? where name=?";
+			return jdbcTemplate.update(sql, new Object[] { newPwd, userName });			
+		}
 }
